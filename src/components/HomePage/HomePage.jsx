@@ -165,7 +165,7 @@ const HomePage = () => {
               color: "#fff",
               fontFamily: "'Georgia', serif",
               fontStyle: "italic",
-              fontSize: { xs: "1.75rem", sm: "2.5rem", md: "3rem", lg: "3.75rem" },
+              fontSize: { xs: "2.25rem", sm: "3rem", md: "3.75rem", lg: "4.5rem" },
             }}
           >
             ResumeAI
