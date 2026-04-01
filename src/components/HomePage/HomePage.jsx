@@ -1,11 +1,10 @@
 import React, { useState } from "react";
-import { Box, Typography, Paper } from "@mui/material";
+import { Box, Typography } from "@mui/material";
 import { motion, AnimatePresence } from "framer-motion";
 import SearchBox from "../SearchBox/SearchBox";
 
 const MotionBox = motion(Box);
 const MotionTypography = motion(Typography);
-const MotionPaper = motion(Paper);
 
 const HomePage = () => {
   const [isSearched, setIsSearched] = useState(false);
@@ -24,7 +23,7 @@ const HomePage = () => {
     setApiResponse("");
 
     try {
-      const response = await fetch("http://72.61.245.169:8000/ask", {
+      const response = await fetch("https://resumeai-gfjr.onrender.com/ask", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -187,167 +186,173 @@ const HomePage = () => {
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
           transition={{ duration: 0.4 }}
-          sx={{ width: "100%", height: "100%" }}
+          sx={{ 
+            width: "100%", 
+            height: "calc(100vh - 40px)",
+            display: "flex",
+            flexDirection: "column",
+            backgroundColor: "transparent",
+          }}
         >
-          {/* Header with title on left */}
-          <MotionBox
-            initial={{ opacity: 0, x: -30 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.5, ease: "easeOut" }}
+          {/* Fixed Header with title and search box */}
+          <Box
             sx={{
-              display: "flex",
-              alignItems: "center",
-              gap: 2,
-              mb: 3,
+              position: "sticky",
+              top: 0,
+              zIndex: 10,
+              backgroundColor: "#000000",
+              pb: 2,
+              "&::after": {
+                content: '""',
+                position: "absolute",
+                bottom: "-20px",
+                left: 0,
+                right: 0,
+                height: "20px",
+                background: "linear-gradient(to bottom, #000000 0%, transparent 100%)",
+                pointerEvents: "none",
+              },
             }}
           >
-            <MotionTypography
-              whileHover={{ scale: 1.1 }}
-              whileTap={{ scale: 0.95 }}
-              variant="h5"
-              onClick={() => {
-                setIsSearched(false);
-                setSearchQuery("");
-              }}
+            {/* Header with title on left */}
+            <MotionBox
+              initial={{ opacity: 0, x: -30 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ duration: 0.5, ease: "easeOut" }}
               sx={{
-                fontWeight: "bold",
-                color: "#fff",
-                fontFamily: "'Georgia', serif",
-                fontStyle: "italic",
-                cursor: "pointer",
-                fontSize: { xs: "1.25rem", sm: "1.5rem" },
+                display: "flex",
+                alignItems: "center",
+                gap: 2,
+                mb: 3,
               }}
             >
-              ResumeAI
-            </MotionTypography>
-          </MotionBox>
+              <MotionTypography
+                whileHover={{ scale: 1.1 }}
+                whileTap={{ scale: 0.95 }}
+                variant="h5"
+                onClick={() => {
+                  setIsSearched(false);
+                  setSearchQuery("");
+                }}
+                sx={{
+                  fontWeight: "bold",
+                  color: "#fff",
+                  fontFamily: "'Georgia', serif",
+                  fontStyle: "italic",
+                  cursor: "pointer",
+                  fontSize: { xs: "1.25rem", sm: "1.5rem" },
+                }}
+              >
+                ResumeAI
+              </MotionTypography>
+            </MotionBox>
 
-          {/* Search box at top center */}
+            {/* Search box at top center */}
+            <MotionBox
+              initial={{ opacity: 0, y: -20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5, delay: 0.1, ease: "easeOut" }}
+              sx={{
+                display: "flex",
+                justifyContent: "center",
+              }}
+            >
+              <SearchBox onSearch={handleSearch} />
+            </MotionBox>
+          </Box>
+
+          {/* Scrollable Answer area */}
           <MotionBox
-            initial={{ opacity: 0, y: -20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5, delay: 0.1, ease: "easeOut" }}
             sx={{
+              flex: 1,
+              overflowY: "auto",
               display: "flex",
               justifyContent: "center",
-              mb: 4,
-            }}
-          >
-            <SearchBox onSearch={handleSearch} />
-          </MotionBox>
-
-          {/* Details box */}
-          <MotionBox
-            sx={{
-              display: "flex",
-              justifyContent: "center",
+              alignItems: "flex-start",
               px: 2,
-              perspective: 1200,
+              pt: 2,
+              scrollBehavior: "smooth",
+              backgroundColor: "transparent",
+              "&::-webkit-scrollbar": {
+                width: "6px",
+              },
+              "&::-webkit-scrollbar-track": {
+                background: "transparent",
+              },
+              "&::-webkit-scrollbar-thumb": {
+                background: "rgba(255, 255, 255, 0.2)",
+                borderRadius: "3px",
+              },
+              "&::-webkit-scrollbar-thumb:hover": {
+                background: "rgba(255, 255, 255, 0.3)",
+              },
             }}
           >
             <AnimatePresence mode="wait">
-              <MotionPaper
+              <MotionBox
                 key={searchCount}
-                initial={{ 
-                  opacity: 0, 
-                  rotateX: 90,
-                  rotateY: -45,
-                  scale: 0.5
-                }}
-                animate={{ 
-                  opacity: 1, 
-                  rotateX: 0,
-                  rotateY: 0,
-                  scale: 1,
-                  boxShadow: "0 8px 32px rgba(25, 118, 210, 0.15)"
-                }}
-                exit={{
-                  opacity: 0,
-                  rotateX: -90,
-                  rotateY: 45,
-                  scale: 0.5,
-                  transition: { duration: 0.4 }
-                }}
-                whileHover={{ 
-                  scale: 1.02,
-                  y: -5,
-                  boxShadow: "0 16px 48px rgba(25, 118, 210, 0.25)"
-                }}
-                transition={{ 
-                  duration: 0.8,
-                  ease: [0.4, 0, 0.2, 1]
-                }}
-                style={{ perspective: 1000, transformStyle: "preserve-3d" }}
-                elevation={0}
+                initial={{ opacity: 0, y: 15 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -10, transition: { duration: 0.2 } }}
+                transition={{ duration: 0.5, ease: "easeOut" }}
                 sx={{
                   width: "100%",
-                  maxWidth: 800,
-                  minHeight: 300,
-                  border: "2px solid #1976d2",
-                  borderRadius: 3,
-                  p: { xs: 3, sm: 4, md: 5 },
-                  backgroundColor: "rgba(255, 255, 255, 0.95)",
-                  display: "flex",
-                  flexDirection: "column",
-                  alignItems: "flex-start",
-                  justifyContent: "center",
+                  maxWidth: 700,
+                  textAlign: "left",
+                  px: { xs: 1, sm: 2 },
+                  pb: 4,
                 }}
               >
-                <MotionBox
-                  initial={{ opacity: 0, y: 30, rotateX: -45, scale: 0.8 }}
-                  animate={{ opacity: 1, y: 0, rotateX: 0, scale: 1 }}
-                  transition={{ duration: 0.5, delay: 0.4, ease: "easeOut" }}
-                  sx={{
-                    width: "100%",
-                    textAlign: "left",
-                    px: { xs: 1, sm: 2, md: 3 },
-                    py: 2,
-                  }}
-                >
-                  {isLoading ? (
-                    <MotionTypography
-                      animate={{ opacity: [0.5, 1, 0.5] }}
-                      transition={{ duration: 1.5, repeat: Infinity }}
-                      variant="h6"
-                      sx={{ 
-                        color: "#666", 
-                        textAlign: "center",
-                        width: "100%",
-                        fontWeight: 500,
-                      }}
-                    >
-                      Loading...
-                    </MotionTypography>
-                  ) : error ? (
-                    <Typography
-                      variant="h6"
-                      sx={{ 
-                        color: "#d32f2f", 
-                        textAlign: "center",
-                        width: "100%",
-                        fontWeight: 500,
-                      }}
-                    >
-                      {error}
-                    </Typography>
-                  ) : (
-                    <Typography
-                      variant="body1"
-                      sx={{
-                        color: "#333",
-                        fontSize: { xs: "1rem", sm: "1.1rem", md: "1.15rem" },
-                        fontWeight: 500,
-                        lineHeight: 2,
-                        letterSpacing: "0.01em",
-                        whiteSpace: "pre-wrap",
-                        wordBreak: "break-word",
-                      }}
-                    >
-                      {apiResponse}
-                    </Typography>
-                  )}
-                </MotionBox>
-              </MotionPaper>
+                {isLoading ? (
+                  <MotionTypography
+                    animate={{ opacity: [0.5, 1, 0.5] }}
+                    transition={{ duration: 1.5, repeat: Infinity }}
+                    variant="body1"
+                    sx={{ 
+                      color: "rgba(255, 255, 255, 0.7)", 
+                      textAlign: "center",
+                      width: "100%",
+                      fontWeight: 400,
+                      fontSize: { xs: "1rem", sm: "1.1rem" },
+                    }}
+                  >
+                    Loading...
+                  </MotionTypography>
+                ) : error ? (
+                  <MotionTypography
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    variant="body1"
+                    sx={{ 
+                      color: "#ff6b6b", 
+                      textAlign: "center",
+                      width: "100%",
+                      fontWeight: 400,
+                      fontSize: { xs: "1rem", sm: "1.1rem" },
+                    }}
+                  >
+                    {error}
+                  </MotionTypography>
+                ) : (
+                  <MotionTypography
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.4, delay: 0.1 }}
+                    variant="body1"
+                    sx={{
+                      color: "rgba(255, 255, 255, 0.9)",
+                      fontSize: { xs: "1rem", sm: "1.05rem", md: "1.1rem" },
+                      fontWeight: 400,
+                      lineHeight: 1.8,
+                      letterSpacing: "0.01em",
+                      whiteSpace: "pre-wrap",
+                      wordBreak: "break-word",
+                    }}
+                  >
+                    {apiResponse}
+                  </MotionTypography>
+                )}
+              </MotionBox>
             </AnimatePresence>
           </MotionBox>
         </MotionBox>
